@@ -19,3 +19,6 @@ test:	main.class
 tree:	$(GENERATED) impl.g4
 	javac $(GENERATED)
 	$(grun) impl start -tree -gui < impl_input.txt
+	
+clean:
+	rm $(GENERATED) *.class *.tokens *.interp implBaseListener.java implListener.java

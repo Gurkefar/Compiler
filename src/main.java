@@ -36,7 +36,10 @@ public class main {
 	// Construct an interpreter and run it on the parse tree
 	//Interpreter interpreter = new Interpreter();
 	Command p = (Command) new AstMaker().visit(parseTree);
-	p.eval(new Environment());
+    Environment env = new Environment();
+
+    p.typeCheck(env);
+	p.eval(env);
     }
 }
 
@@ -134,8 +137,9 @@ class AstMaker extends AbstractParseTreeVisitor<AST> implements implVisitor<AST>
 
     public AST visitArrAssignment(implParser.ArrAssignmentContext ctx){
         String s = ctx.x.getText();
-        Expr e = (Expr) visit(ctx.e);
-        return new ArrAssignment(s, e);
+        Expr e1 = (Expr) visit(ctx.e1);
+        Expr e2 = (Expr) visit(ctx.e2);
+        return new ArrAssignment(s, e1, e2);
     }
 
     public AST visitParenthesis(implParser.ParenthesisContext ctx){
@@ -147,7 +151,9 @@ class AstMaker extends AbstractParseTreeVisitor<AST> implements implVisitor<AST>
     };
 
     public AST visitArray(implParser.ArrayContext ctx){
-    return new Array(ctx.x.getText());
+    String s = ctx.x.getText();
+    Expr e = (Expr) visit(ctx.e);
+    return new Array(s, e);
     };
     
     public AST visitAddition(implParser.AdditionContext ctx){
